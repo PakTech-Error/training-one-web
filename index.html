@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TRAININGONE | ALL TRAINING IN ONE SOLUTION</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@200;400;700&family=Orbitron:wght@400;900&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚡</text></svg>">
+
+    <style>
+         :root {
+            --lime: #39B54A;
+            --orange: #F7941D;
+            --navy: #0054A6;
+        }
+        
+        body {
+            font-family: 'Kanit', sans-serif;
+            background-color: #f4f4f4;
+            background-image: linear-gradient(rgba(0, 0, 0, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 0, 0, 0.03) 1px, transparent 1px);
+            background-size: 30px 30px;
+            color: #1a1a1a;
+        }
+        
+        .font-tech {
+            font-family: 'Orbitron', sans-serif;
+        }
+        
+        .card-corner {
+            clip-path: polygon(0 0, 100% 0, 100% 85%, 85% 100%, 0 100%);
+            transform-style: preserve-3d;
+            transition: transform 0.1s ease-out;
+        }
+        
+        .corner-accent {
+            clip-path: polygon(0 0, 100% 0, 100% 100%, 30% 100%, 0 30%);
+            background: var(--lime);
+        }
+        
+        .bento-item {
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(10px);
+        }
+        
+        .bento-item:hover {
+            transform: scale(1.03) translateY(-8px);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.08);
+            border-color: var(--lime);
+        }
+        
+        #scroll-progress {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 4px;
+            background: linear-gradient(to right, var(--navy), var(--lime), var(--orange));
+            z-index: 1000;
+            width: 0%;
+            border-radius: 0 2px 2px 0;
+        }
+        
+        @keyframes float {
+            0%,
+            100% {
+                transform: translateY(0px) scale(1);
+            }
+            50% {
+                transform: translateY(-30px) scale(1.1);
+            }
+        }
+        
+        .animate-float {
+            animation: float 8s ease-in-out infinite;
+        }
+        
+        .animate-float-delay {
+            animation: float 10s ease-in-out infinite;
+            animation-delay: 2s;
+        }
+        /* --- แก้ไขส่วน Mobile Menu --- */
+        
+        #mobile-menu {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(20px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 400;
+            transform: translateY(-100%);
+            opacity: 0;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            pointer-events: none;
+        }
+        
+        #mobile-menu.active {
+            transform: translateY(0);
+            opacity: 1;
+            pointer-events: auto;
+        }
+        
+        .active .line-1 {
+            transform: translateY(8px) rotate(45deg);
+        }
+        
+        .active .line-2 {
+            opacity: 0;
+        }
+        
+        .active .line-3 {
+            transform: translateY(-8px) rotate(-45deg);
+        }
+        
+        .menu-btn-line {
+            transition: all 0.3s ease;
+            transform-origin: center;
+        }
+    </style>
+</head>
+
+<body class="overflow-x-hidden">
+
+    <div id="scroll-progress"></div>
+
+    <header class="fixed w-full z-[500] bg-white/80 backdrop-blur-md border-b border-gray-100 shadow-sm">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <a href="index.html" class="flex flex-col items-start leading-none group cursor-pointer">
+                    <span class="text-[10px] uppercase tracking-widest text-gray-400 group-hover:text-gray-600 transition">All Training in One Solution</span>
+                    <div class="flex items-center gap-1 font-bold text-2xl">
+                        <span style="color: var(--orange)">TRAINING</span>
+                        <span class="bg-[#39B54A] text-white px-2 py-0.5 rounded ml-1 group-hover:scale-105 transition-transform">ONE</span>
+                    </div>
+                </a>
+            </div>
+
+            <nav class="hidden md:flex space-x-8 text-sm font-bold uppercase">
+                <a href="index.html" class="hover:text-[#39B54A] transition">หน้าแรก</a>
+                <a href="#services" class="hover:text-[#39B54A] transition">บริการ</a>
+                <a href="albums.html" class="hover:text-[#39B54A] transition">อัลบั้มภาพ</a>
+                <a href="#contact" class="hover:text-[#39B54A] transition text-[#0054A6]">ติดต่อเรา</a>
+            </nav>
+
+            <button id="mobile-menu-btn" class="md:hidden flex flex-col justify-center items-center w-10 h-10 relative z-[600]" onclick="toggleMobileMenu()">
+                <span class="menu-btn-line line-1 w-6 h-0.5 bg-gray-800 mb-1.5"></span>
+                <span class="menu-btn-line line-2 w-6 h-0.5 bg-gray-800 mb-1.5"></span>
+                <span class="menu-btn-line line-3 w-6 h-0.5 bg-gray-800"></span>
+            </button>
+        </div>
+
+        <div id="mobile-menu" class="md:hidden">
+            <nav class="flex flex-col items-center space-y-8">
+                <a href="index.html" class="text-3xl font-bold text-gray-800" onclick="toggleMobileMenu()">หน้าแรก</a>
+                <a href="#services" class="text-3xl font-bold text-gray-800" onclick="toggleMobileMenu()">บริการ</a>
+                <a href="albums.html" class="text-3xl font-bold text-[#39B54A]" onclick="toggleMobileMenu()">อัลบั้ม</a>
+                <a href="#contact" class="text-3xl font-bold text-[#0054A6]" onclick="toggleMobileMenu()">ติดต่อเรา</a>
+            </nav>
+        </div>
+    </header>
+
+    <section class="min-h-screen flex items-center justify-center pt-20 relative overflow-hidden">
+        <div class="container mx-auto px-6 grid md:grid-cols-2 gap-12 items-center relative z-10">
+            <div id="hero-text">
+                <h1 class="text-5xl md:text-7xl font-bold leading-tight mb-6">
+                    Professional <br>
+                    <span style="color: var(--lime)" class="inline-block relative">
+                        IT Solutions
+                        <span class="absolute bottom-2 left-0 w-full h-3 bg-lime-200 -z-10 opacity-50"></span>
+                    </span><br>
+                </h1>
+                <p class="text-xl text-gray-500 mb-8 max-w-lg">
+                    บริการเช่าอุปกรณ์ไอที โน้ตบุ๊ก และวางระบบ Network ครบวงจร โดยบริษัท **Training One Co.,Ltd.**
+                </p>
+                <div class="flex gap-4">
+                    <button class="bg-[#0054A6] text-white px-8 py-4 rounded-xl font-bold hover:bg-[#004080] hover:shadow-xl hover:shadow-[#0054A6]/30 transition-all transform hover:-translate-y-1">ดูรายการอุปกรณ์</button>
+                    <!-- <button class="bg-white border-2 border-gray-200 px-8 py-4 rounded-xl font-bold hover:border-[#39B54A] hover:text-[#39B54A] transition-all transform hover:-translate-y-1">ขอใบเสนอราคา</button> -->
+                </div>
+            </div>
+
+            <div id="hero-card" class="relative mt-12 md:mt-0" style="perspective: 1000px;">
+                <div id="interactive-card" class="bg-white/90 backdrop-blur-xl p-8 rounded-2xl shadow-2xl border border-white relative overflow-hidden card-corner max-w-md mx-auto h-auto md:aspect-[1.75/1]">
+
+                    <div class="absolute top-0 right-0 w-24 h-24 corner-accent"></div>
+
+                    <div class="relative z-10" style="transform: translateZ(30px);">
+                        <div class="text-[10px] text-gray-400 uppercase mb-2">All Training in One Solution</div>
+                        <div class="flex items-center gap-1 font-bold text-3xl mb-6 md:mb-8">
+                            <span style="color: var(--orange)">TRAINING</span>
+                            <span class="bg-[#39B54A] text-white px-2 py-0.5 rounded">ONE</span>
+                        </div>
+
+                        <div class="mt-8 md:mt-12">
+                            <h2 class="text-xl md:text-2xl font-bold text-gray-800">Mr.Theera Chuenmongkol</h2>
+                            <h2 class="text-xl md:text-2xl font-bold text-gray-800">คุณ ธีระ ชื่นมงคล</h2>
+                            <p class="text-[#39B54A] font-medium">General Manager</p>
+                        </div>
+                    </div>
+
+                    <div class="absolute bottom-4 right-4 md:bottom-6 md:right-6 opacity-10 text-gray-900" style="transform: translateZ(10px);">
+                        <svg class="w-16 h-16 md:w-20 md:h-20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <rect width="18" height="18" x="3" y="3" rx="2"/><path d="M7 7h.01"/><path d="M12 7h.01"/><path d="M17 7h.01"/><path d="M7 12h.01"/><path d="M12 12h.01"/><path d="M17 12h.01"/><path d="M7 17h.01"/><path d="M12 17h.01"/><path d="M17 17h.01"/>
+            </svg>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="absolute top-1/4 -left-20 w-96 h-96 bg-lime-300/30 blur-[100px] rounded-full animate-float mix-blend-multiply"></div>
+        <div class="absolute bottom-1/4 -right-20 w-96 h-96 bg-blue-300/30 blur-[100px] rounded-full animate-float-delay mix-blend-multiply"></div>
+    </section>
+
+    <section id="services" class="py-24 relative z-20">
+        <div class="container mx-auto px-6">
+            <h2 class="text-4xl font-bold text-center mb-16 text-gray-800">บริการของเรา</h2>
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                <div class="md:col-span-2 md:row-span-2 bento-item bg-gradient-to-br from-slate-900 to-slate-800 rounded-3xl p-10 text-white flex flex-col justify-end relative overflow-hidden group">
+                    <div class="absolute top-0 right-0 p-8 opacity-10 group-hover:opacity-30 group-hover:scale-110 transition-all duration-500 transform origin-top-right">
+                        <svg width="180" height="180" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1"><path d="M20 16V4a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v12m16 0a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-2a2 2 0 0 1 2-2m16 0h-2M4 16h2"/></svg>
+                    </div>
+                    <div class="relative z-10">
+                        <h3 class="text-3xl font-bold mb-4">Notebook Rental</h3>
+                        <p class="text-gray-300">เช่าโน้ตบุ๊กสเปกสำหรับงานอบรม สัมมนา หรือใช้ในสำนักงาน</p>
+                    </div>
+                </div>
+
+                <div class="bento-item bg-white/80 rounded-3xl p-8 border-b-4 border-[#F7941D] group">
+                    <div class="w-12 h-12 bg-orange-100 text-orange-500 rounded-xl flex items-center justify-center mb-6 group-hover:bg-orange-500 group-hover:text-white transition-colors">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 5v14l11-7z"/></svg>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Network Setup</h3>
+                    <p class="text-sm text-gray-500">วางระบบ WiFi และ Network ในงานอีเวนต์</p>
+                </div>
+
+                <div class="bento-item bg-white/80 rounded-3xl p-8 border-b-4 border-[#39B54A] group">
+                    <div class="w-12 h-12 bg-lime-100 text-lime-600 rounded-xl flex items-center justify-center mb-6 group-hover:bg-lime-500 group-hover:text-white transition-colors">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">ทีมเทคนิคดูแลหน้างานตลอดการเช่า</h3>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact" class="py-24 relative z-20">
+        <div class="container mx-auto px-6 max-w-4xl">
+            <div class="bg-white/90 backdrop-blur-md rounded-[2rem] shadow-2xl border border-white overflow-hidden grid md:grid-cols-2 transform hover:shadow-3xl transition-shadow">
+                <div class="p-12 bg-gradient-to-br from-[#0054A6] to-[#003d7a] text-white relative overflow-hidden">
+                    <div class="absolute -bottom-10 -right-10 opacity-10">
+                        <svg width="200" height="200" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                    </div>
+                    <h2 class="text-3xl font-bold mb-8 font-tech italic relative z-10">ข้อมูลติดต่อ</h2>
+                    <ul class="space-y-6 relative z-10">
+                        <li class="flex items-start gap-4 hover:translate-x-2 transition-transform cursor-pointer">
+                            <svg class="mt-1 shrink-0 text-lime-400" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                            <span>+66 (0) 80 968 9888</span>
+                        </li>
+                        <li class="flex items-start gap-4 hover:translate-x-2 transition-transform cursor-pointer">
+                            <svg class="mt-1 shrink-0 text-lime-400" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+                            <span class="break-all">TRAININGONE2010@GMAIL.COM</span>
+                        </li>
+                        <li class="flex items-start gap-4 hover:translate-x-2 transition-transform cursor-pointer">
+                            <svg class="mt-1 shrink-0 text-lime-400" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+                            <span>fb.com/TrainingOne</span>
+                        </li>
+                        <li class="flex items-start gap-4 hover:translate-x-2 transition-transform cursor-pointer">
+                            <svg class="mt-1 shrink-0 text-lime-400" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+                            <span class="text-sm">41 ซอยโชคชัย 4 ซอย 50 แยก 4, <br>เขตลาดพร้าว กรุงเทพมหานคร 10230</span>
+                        </li>
+                    </ul>
+                </div>
+                <div class="p-12 flex flex-col items-center justify-center text-center bg-white">
+                    <div class="mb-6 p-4 border-2 border-dashed border-[#39B54A] rounded-2xl hover:bg-lime-50 transition-colors cursor-pointer group">
+                        <div class="w-32 h-32 bg-gray-50 flex flex-col items-center justify-center font-bold text-gray-400 rounded-xl group-hover:text-[#39B54A] transition-colors">
+                            <svg class="mb-2" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3h6v6H3z"/><path d="M15 3h6v6h-6z"/><path d="M3 15h6v6H3z"/><path d="M21 15v6h-6v-6z"/><path d="M15 15h6v6h-6z"/></svg>                            QR CODE
+                        </div>
+                    </div>
+                    <p class="font-bold text-lg mb-2 text-gray-800">Scan to Line Support</p>
+                    <p class="text-gray-500 text-sm">พร้อมตอบคำถามและให้คำปรึกษา</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="py-12 text-center text-gray-400 text-xs border-t border-gray-200 uppercase tracking-widest relative z-20 bg-white">
+        © 2026 Training One Co.,Ltd. All Rights Reserved.
+    </footer>
+
+    <script>
+        gsap.registerPlugin(ScrollTrigger);
+
+        gsap.from("#hero-text > *", {
+            duration: 1,
+            y: 30,
+            opacity: 0,
+            stagger: 0.2,
+            ease: "power3.out"
+        });
+        gsap.from("#hero-card", {
+            duration: 1.5,
+            x: 50,
+            opacity: 0,
+            rotateY: 15,
+            ease: "power4.out",
+            delay: 0.3
+        });
+
+        const cardContainer = document.getElementById('hero-card');
+        const card = document.getElementById('interactive-card');
+        cardContainer.addEventListener('mousemove', (e) => {
+            const rect = cardContainer.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            const centerX = rect.width / 2;
+            const centerY = rect.height / 2;
+            const rotateX = ((y - centerY) / centerY) * -10;
+            const rotateY = ((x - centerX) / centerX) * 10;
+            card.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+        });
+        cardContainer.addEventListener('mouseleave', () => {
+            card.style.transform = `rotateX(0deg) rotateY(0deg)`;
+        });
+
+        window.addEventListener('scroll', () => {
+            const scrolled = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
+            document.getElementById('scroll-progress').style.width = scrolled + '%';
+        });
+
+        gsap.utils.toArray('.bento-item').forEach((item, i) => {
+            gsap.from(item, {
+                scrollTrigger: {
+                    trigger: "#services",
+                    start: "top 80%"
+                },
+                y: 50,
+                opacity: 0,
+                duration: 0.8,
+                delay: i * 0.15,
+                ease: "back.out(1.7)"
+            });
+        });
+
+        // --- JavaScript สำหรับเมนู ---
+        let isMenuOpen = false;
+
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            const btn = document.getElementById('mobile-menu-btn');
+            isMenuOpen = !isMenuOpen;
+
+            if (isMenuOpen) {
+                menu.classList.add('active');
+                btn.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            } else {
+                menu.classList.remove('active');
+                btn.classList.remove('active');
+                document.body.style.overflow = 'auto';
+            }
+        }
+    </script>
+</body>
+
+</html>
